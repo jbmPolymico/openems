@@ -66,10 +66,12 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 		return this.builder.modbusUnitId;
 	}
 
+	/**
 	@Override
 	public StartStopConfig startStop() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	*/
 
 }
