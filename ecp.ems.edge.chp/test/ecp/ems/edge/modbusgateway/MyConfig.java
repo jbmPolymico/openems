@@ -1,6 +1,7 @@
 package ecp.ems.edge.modbusgateway;
 
 import io.openems.common.utils.ConfigUtils;
+import io.openems.edge.common.startstop.StartStopConfig;
 import io.openems.common.test.AbstractComponentConfig;
 
 @SuppressWarnings("all")
@@ -63,6 +64,12 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 	@Override
 	public int modbusUnitId() {
 		return this.builder.modbusUnitId;
+	}
+
+	@Override
+	public StartStopConfig startStop() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

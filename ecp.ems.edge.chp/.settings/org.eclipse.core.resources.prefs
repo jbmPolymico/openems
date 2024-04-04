@@ -1,7 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/ecp/ems/edge/modbusgateway/Config.java=UTF-8
-encoding//src/ecp/ems/edge/modbusgateway/MyModbusDevice.java=UTF-8
-encoding//src/ecp/ems/edge/modbusgateway/MyModbusDeviceImpl.java=UTF-8
+encoding//src/ecp/ems/edge/modbusgateway/ModbusGateway.java=UTF-8
+encoding//src/ecp/ems/edge/modbusgateway/ModbusGatewayImpl.java=UTF-8
 encoding//test/ecp/ems/edge/modbusgateway/MyConfig.java=UTF-8
 encoding//test/ecp/ems/edge/modbusgateway/MyModbusDeviceTest.java=UTF-8
 encoding/<project>=UTF-8
