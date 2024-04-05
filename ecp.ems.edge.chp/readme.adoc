@@ -1,3 +1,5 @@
 = ecp.ems.edge.modbusgateway
 
+Basic implementation of interface for modbus gateway on ECP XRGI
+
 https://github.com/OpenEMS/openems/tree/develop/ecp.ems.edge.modbusgateway[Source Code icon:github[]]
