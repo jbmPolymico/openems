@@ -1,15 +1,14 @@
 package ecp.ems.edge.modbusgateway;
 
-import io.openems.common.utils.ConfigUtils;
-import io.openems.edge.common.startstop.StartStopConfig;
 import io.openems.common.test.AbstractComponentConfig;
+import io.openems.common.utils.ConfigUtils;
 
 @SuppressWarnings("all")
 public class MyConfig extends AbstractComponentConfig implements Config {
 
 	protected static class Builder {
 		private String id;
-		private String modbusId = null;
+		private String modbusId;
 		private int modbusUnitId;
 
 		private Builder() {
