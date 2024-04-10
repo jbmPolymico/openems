@@ -1,0 +1,15 @@
+Bundle-Name: ecp.ems.edge.modbusgateway
+Bundle-Vendor: EC Power A/S
+Bundle-License: All rights reserved
+Bundle-Version: 1.0.0.${tstamp}
+
+-buildpath: \
+	${buildpath},\
+	com.ghgande.j2mod,\
+	io.openems.common,\
+	io.openems.edge.bridge.modbus,\
+	io.openems.edge.common,\
+	io.openems.edge.controller.api,\
+
+-testpath: \
+	${testpath}

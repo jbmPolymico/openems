@@ -1,0 +1,12 @@
+= ecp.ems.edge.basiccontroller
+
+Basic controller for EC Power CHP through Modbus Gateway. It activates the CHP on VPP mode 1, 100% load level upon start-up. This controller must be presented to the "VPP mode" and "CHP load level" channels of the CHP to operate.
+
+== Configuration
+- `Component-ID` Unique ID of this Component (id), e.g. "chpCtrl01"
+- `Alias` Human-readable name of this Component; defaults to Component-ID (alias)
+- `Output Channels` references to channels for VPP mode and CHP Load Level
+
+
+
+https://github.com/jbmPolymico/openems/tree/develop/ecp.ems.edge.basiccontroller[Source Code icon:github[]]

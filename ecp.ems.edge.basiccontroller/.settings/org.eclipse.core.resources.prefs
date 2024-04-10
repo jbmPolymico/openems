@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/ecp/ems/edge/basiccontroller/BasicController.java=UTF-8
+encoding//src/ecp/ems/edge/basiccontroller/BasicControllerImpl.java=UTF-8
+encoding//src/ecp/ems/edge/basiccontroller/Config.java=UTF-8
+encoding//test/ecp/ems/edge/basiccontroller/MyConfig.java=UTF-8
+encoding//test/ecp/ems/edge/basiccontroller/MyControllerTest.java=UTF-8
+encoding/<project>=UTF-8
+encoding/bnd.bnd=UTF-8
+encoding/readme.adoc=UTF-8

@@ -1,0 +1,12 @@
+Bundle-Name: EC Power A/S Edge ecp.ems.edge.chp.api Api
+Bundle-Vendor: EC Power A/S
+Bundle-License: All rights reserved 
+Bundle-Version: 1.0.0.${tstamp}
+
+-buildpath: \
+	${buildpath},\
+	io.openems.common,\
+	io.openems.edge.common
+
+-testpath: \
+	${testpath}
