@@ -37,6 +37,10 @@ abstract class AbstractMqttManager {
     String mqttUsername;
     String mqttPassword;
     String mqttClientId;
+    String certPem;
+    String privateKeyPem;
+    String trustStorePem;
+    
     int keepAlive;
     protected static final int MAX_LIST_LENGTH = 30;
     //Counter for Qos --> e.g. QoS 0 has counter 10 --> FOR LIST FILL
@@ -49,12 +53,15 @@ abstract class AbstractMqttManager {
     private final List<Long> averageTime = new ArrayList<>();
 
     AbstractMqttManager(String mqttBroker, String mqttUsername, String mqttPassword,
-                        String mqttClientId, int keepAlive, Map<String, List<MqttTask>> allTasks) {
+                        String mqttClientId, String certPem, String privateKeyPem, String trustStorePem, int keepAlive, Map<String, List<MqttTask>> allTasks) {
 
         this.mqttBroker = mqttBroker;
         this.mqttUsername = mqttUsername;
         this.mqttPassword = mqttPassword;
         this.mqttClientId = mqttClientId;
+        this.certPem = certPem;
+        this.privateKeyPem = privateKeyPem;
+        this.trustStorePem = trustStorePem;
         this.keepAlive = keepAlive;
         this.allTasks = allTasks;
         this.timeForQos = new HashMap<>();

@@ -91,6 +91,9 @@ public class MqttBridgeImpl extends AbstractOpenemsComponent implements OpenemsC
     private String mqttPassword;
     private String mqttBroker;
     private String mqttClientId;
+    private String certPem;
+    private String privateKeyPem;
+    private String trustStorePem;
     private int keepAlive = 100;
     private final AtomicInteger executorCurrent = new AtomicInteger(10);
     private static final int EXECUTOR_MAX = 20;
@@ -144,10 +147,10 @@ public class MqttBridgeImpl extends AbstractOpenemsComponent implements OpenemsC
             }
 
             this.publishManager = new MqttPublishManager(this.publishTasks, this.mqttBroker, this.mqttUsername,
-                    this.mqttPassword, config.keepAlive(), this.mqttClientId);
+                    this.mqttPassword, this.certPem, this.privateKeyPem, this.trustStorePem, config.keepAlive(), this.mqttClientId);
             //ClientId --> + CLIENT_SUB_0
             this.subscribeManager = new MqttSubscribeManager(this.subscribeTasks, this.mqttBroker, this.mqttUsername,
-                    this.mqttPassword, this.mqttClientId, config.keepAlive());
+                    this.mqttPassword, this.certPem, this.privateKeyPem, this.trustStorePem, this.mqttClientId, config.keepAlive());
             this.publishManager.setComponentManager(this.cpm);
             this.subscribeManager.setComponentManager(this.cpm);
             this.publishManager.setCoreCycle(config.useCoreCycleTime());
@@ -224,7 +227,7 @@ public class MqttBridgeImpl extends AbstractOpenemsComponent implements OpenemsC
         //BridgePublish set LastWill if configured
         if (config.lastWillSet()) {
             this.bridgePublisher.createMqttPublishSession(this.mqttBroker, this.mqttClientId, config.keepAlive(),
-                    this.mqttUsername, this.mqttPassword, config.cleanSessionFlag());
+                    this.mqttUsername, this.mqttPassword, this.certPem, this.privateKeyPem, this.trustStorePem, config.cleanSessionFlag());
             this.bridgePublisher.addLastWill(config.topicLastWill(),
                     config.payloadLastWill(), config.qosLastWill(), config.timeStampEnabled(), config.retainedFlag(),
                     GetStandardZonedDateTimeFormatted.getStandardZonedDateTimeString());
@@ -555,10 +558,10 @@ public class MqttBridgeImpl extends AbstractOpenemsComponent implements OpenemsC
         try {
 
             this.publishManager = new MqttPublishManager(this.publishTasks, this.mqttBroker, this.mqttUsername,
-                    this.mqttPassword, this.keepAlive, this.mqttClientId);
+                    this.mqttPassword, this.certPem, this.privateKeyPem, this.trustStorePem, this.keepAlive, this.mqttClientId);
             //ClientId --> + CLIENT_SUB_0
             this.subscribeManager = new MqttSubscribeManager(this.subscribeTasks, this.mqttBroker, this.mqttUsername,
-                    this.mqttPassword, this.mqttClientId, this.keepAlive);
+                    this.mqttPassword, this.certPem, this.privateKeyPem, this.trustStorePem, this.mqttClientId, this.keepAlive);
             this.subscribeTasks.forEach((key, value) -> value.forEach(entry -> {
                 try {
                     this.subscribeManager.subscribeToTopic(entry, key);

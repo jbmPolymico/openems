@@ -16,11 +16,13 @@ public class MqttSubscribeManager extends AbstractMqttManager {
     private final MqttConnectionSubscribeImpl connection = new MqttConnectionSubscribeImpl();
 
     public MqttSubscribeManager(Map<String, List<MqttTask>> subscribeTasks, String mqttBroker,
-                                String mqttUsername, String mqttPassword, String mqttClientId, int keepAlive) throws MqttException {
+                                String mqttUsername, String mqttPassword, String certPem, 
+                                String privateKeyPem, String trustStorePem, String mqttClientId, 
+                                int keepAlive) throws MqttException {
 
-        super(mqttBroker, mqttUsername, mqttPassword, mqttClientId, keepAlive, subscribeTasks);
+        super(mqttBroker, mqttUsername, mqttPassword, mqttClientId, certPem, privateKeyPem, trustStorePem, keepAlive, subscribeTasks);
         this.connection.createMqttSubscribeSession(super.mqttBroker, super.mqttClientId + "_SUBSCRIBE",
-                super.mqttUsername, super.mqttPassword, super.keepAlive);
+                super.mqttUsername, super.mqttPassword, super.certPem, super.privateKeyPem, super.trustStorePem, super.keepAlive);
 
     }
 

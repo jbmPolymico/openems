@@ -40,6 +40,15 @@ import org.osgi.service.metatype.annotations.Option;
                     @Option(label = "Websocket", value = "Wss")
             })
     String connection() default "Tcp";
+    
+    @AttributeDefinition(name = "Certificate", description = "The client certificate in PEM format")
+	String certPem();
+
+	@AttributeDefinition(name = "Private Key", description = "The private key in PEM format")
+	String privateKeyPem();
+
+	@AttributeDefinition(name = "Trust Store", description = "The trust store in PEM format")
+	String trustStorePem();
 
     @AttributeDefinition(name = "Username", description = "Username for the Broker")
     String username() default "user";

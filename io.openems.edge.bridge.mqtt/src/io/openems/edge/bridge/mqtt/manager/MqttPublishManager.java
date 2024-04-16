@@ -23,13 +23,14 @@ public class MqttPublishManager extends AbstractMqttManager {
     private final MqttConnectionPublishImpl connection = new MqttConnectionPublishImpl();
 
     public MqttPublishManager(Map<String, List<MqttTask>> publishTasks, String mqttBroker,
-                              String mqttUsername, String mqttPassword, int keepAlive, String mqttClientId) throws MqttException {
+                              String mqttUsername, String mqttPassword, String certPem, 
+                              String privateKeyPem, String trustStorePem, int keepAlive, String mqttClientId) throws MqttException {
 
-        super(mqttBroker, mqttUsername, mqttPassword, mqttClientId, keepAlive, publishTasks);
+        super(mqttBroker, mqttUsername, mqttPassword, certPem, privateKeyPem, trustStorePem, mqttClientId, keepAlive, publishTasks);
         //Create new Connection Publish
 
         this.connection.createMqttPublishSession(super.mqttBroker, super.mqttClientId + "_PUBLISH",
-                super.keepAlive, super.mqttUsername, super.mqttPassword, false);
+                super.keepAlive, super.mqttUsername, super.mqttPassword, super.certPem, super.privateKeyPem, super.trustStorePem, false);
         this.connection.connect();
     }
 

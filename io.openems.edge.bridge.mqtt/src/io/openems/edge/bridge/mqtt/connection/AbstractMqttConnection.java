@@ -1,7 +1,15 @@
 package io.openems.edge.bridge.mqtt.connection;
 
-import com.google.gson.JsonObject;
-import io.openems.edge.bridge.mqtt.api.MqttConnection;
+import static io.openems.edge.bridge.mqtt.connection.MqttUtils.createSslSocketFactory;
+import static io.openems.edge.bridge.mqtt.api.ConfigurationSplits.PAYLOAD_MAPPING_SPLITTER;
+
+
+import java.util.Arrays;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.net.SocketFactory;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -12,11 +20,11 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.google.gson.JsonObject;
 
-import static io.openems.edge.bridge.mqtt.api.ConfigurationSplits.PAYLOAD_MAPPING_SPLITTER;
+import io.openems.edge.bridge.mqtt.api.MqttConnection;
+
+
 
 
 /**
@@ -44,19 +52,31 @@ public abstract class AbstractMqttConnection implements MqttConnection, MqttCall
      * @param mqttClientId Client ID usually from Bridge.
      * @param username     username usually from Bridge.
      * @param mqttPassword password for broker usually from Bridge.
+     * @param certPem	    Device certificate
+     * @param privateKeyPem Device private key
+     * @param trusStorePem  TrustStore
      * @param cleanSession cleanSession flag.
      * @param keepAlive    keepAlive of the Session.
      * @throws MqttException is throw if somethings wrong with the Client/Options.
      */
     private void createMqttSessionBasicSetup(String mqttBroker, String mqttClientId, String username, String mqttPassword,
+    										 String certPem, String privateKeyPem, String trustStorePem,
                                              boolean cleanSession, int keepAlive) throws MqttException {
         this.mqttClient = new MqttClient(mqttBroker, mqttClientId + "_RandomId_" + new Random().nextInt(), this.persistence);
         if (!username.trim().equals("")) {
             this.mqttConnectOptions.setUserName(username);
         }
+       
         if (!username.trim().equals("")) {
             this.mqttConnectOptions.setPassword(mqttPassword.toCharArray());
         }
+        
+        if (certPem != null && !certPem.isBlank() //
+        		&& privateKeyPem != null && !privateKeyPem.isBlank() //
+				&& trustStorePem != null && !trustStorePem.isBlank()) {
+        	this.mqttConnectOptions.setSocketFactory(createSslSocketFactory(certPem, privateKeyPem, trustStorePem));
+		}
+        
         this.mqttConnectOptions.setCleanSession(cleanSession);
         this.mqttConnectOptions.setKeepAliveInterval(keepAlive);
         this.mqttConnectOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
@@ -66,19 +86,25 @@ public abstract class AbstractMqttConnection implements MqttConnection, MqttCall
     }
 
 
-    /**
+
+
+	/**
      * Creates the MqttSubscribe session.
      *
      * @param mqttBroker   URL of Broker usually from manager/bridge.
      * @param mqttClientId ClientID of the Connection.
      * @param username     username.
      * @param mqttPassword password.
+     * @param certPem	    Device certificate.
+     * @param privateKeyPem Device private key.
+     * @param trusStorePem  TrustStore.
      * @param keepAlive    keepAlive.
      * @throws MqttException if connection fails or other problems occurred with mqtt.
      */
     @Override
-    public void createMqttSubscribeSession(String mqttBroker, String mqttClientId, String username, String mqttPassword, int keepAlive) throws MqttException {
-        this.createMqttSessionBasicSetup(mqttBroker, mqttClientId, username, mqttPassword, false, keepAlive);
+    public void createMqttSubscribeSession(String mqttBroker, String mqttClientId, String username, String mqttPassword, //
+    										String certPem, String privateKeyPem, String trustStorePem, int keepAlive) throws MqttException {
+        this.createMqttSessionBasicSetup(mqttBroker, mqttClientId, username, mqttPassword, certPem, privateKeyPem, trustStorePem, false, keepAlive);
         this.connect();
     }
 
@@ -90,14 +116,17 @@ public abstract class AbstractMqttConnection implements MqttConnection, MqttCall
      * @param keepAlive    keepAlive flag.
      * @param username     username.
      * @param password     password.
+     * @param certPem	    Device certificate.
+     * @param privateKeyPem Device private key.
+     * @param trusStorePem  TrustStore.
      * @param cleanSession clean session flag.
      * @throws MqttException if connection fails or other problems occurred with mqtt.
      */
     @Override
     public void createMqttPublishSession(String broker, String clientId, int keepAlive, String username,
-                                         String password, boolean cleanSession) throws MqttException {
+                                         String password, String certPem, String privateKeyPem, String trustStorePem, boolean cleanSession) throws MqttException {
 
-        this.createMqttSessionBasicSetup(broker, clientId, username, password, cleanSession, keepAlive);
+        this.createMqttSessionBasicSetup(broker, clientId, username, password, certPem, privateKeyPem, trustStorePem, cleanSession, keepAlive);
 
     }
 

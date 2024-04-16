@@ -20,7 +20,7 @@ public interface MqttConnection {
      * @param keepAlive    keepAlive.
      * @throws MqttException if connection fails or other problems occurred with mqtt.
      */
-    void createMqttSubscribeSession(String mqttBroker, String mqttClientId, String username, String mqttPassword, int keepAlive) throws MqttException;
+    void createMqttSubscribeSession(String mqttBroker, String mqttClientId, String username, String mqttPassword, String certPem, String privateKeyPem, String trustStorePem, int keepAlive) throws MqttException;
 
     /**
      * Creates the publish connection.
@@ -34,7 +34,7 @@ public interface MqttConnection {
      * @throws MqttException if connection fails or other problems occurred with mqtt.
      */
     void createMqttPublishSession(String broker, String clientId, int keepAlive, String username,
-                                  String password, boolean cleanSession) throws MqttException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException;
+                                  String password, String certPem, String privateKeyPem, String trustStorePem, boolean cleanSession) throws MqttException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException;
 
     /**
      * Adds the last will to the Connection.
