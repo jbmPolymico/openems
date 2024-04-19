@@ -26,7 +26,7 @@ public class MqttPublishManager extends AbstractMqttManager {
                               String mqttUsername, String mqttPassword, String certPem, 
                               String privateKeyPem, String trustStorePem, int keepAlive, String mqttClientId) throws MqttException {
 
-        super(mqttBroker, mqttUsername, mqttPassword, certPem, privateKeyPem, trustStorePem, mqttClientId, keepAlive, publishTasks);
+        super(mqttBroker, mqttUsername, mqttPassword, mqttClientId, certPem, privateKeyPem, trustStorePem, keepAlive, publishTasks);
         //Create new Connection Publish
 
         this.connection.createMqttPublishSession(super.mqttBroker, super.mqttClientId + "_PUBLISH",

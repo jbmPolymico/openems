@@ -124,7 +124,7 @@ public class MqttBridgeImpl extends AbstractOpenemsComponent implements OpenemsC
             this.updateConfig();
             return;
         }
-        this.basicActivationOrModifiedSetup(config);
+        this.basicActivationOrModifiedSetup(config);        
     }
 
     /**
@@ -201,6 +201,7 @@ public class MqttBridgeImpl extends AbstractOpenemsComponent implements OpenemsC
      * @throws MqttException if somethings wrong like pw wrong or user etc.
      */
     private void createMqttSession(Config config) throws MqttException {
+    	System.out.println("Creating MQTT Session");
         this.keepAlive = config.keepAlive();
         //Create Broker URL/IP etc
         //TCP SSL OR WSS
@@ -224,15 +225,25 @@ public class MqttBridgeImpl extends AbstractOpenemsComponent implements OpenemsC
         this.mqttPassword = config.password();
         //ClientID will be automatically altered by Managers depending on what they're doing
         this.mqttClientId = config.clientId();
+        
+        // Update for passing certificates
+        this.certPem = config.certPem();
+        this.privateKeyPem = config.privateKeyPem();
+        this.trustStorePem = config.trustStorePem();
+        
         //BridgePublish set LastWill if configured
         if (config.lastWillSet()) {
             this.bridgePublisher.createMqttPublishSession(this.mqttBroker, this.mqttClientId, config.keepAlive(),
                     this.mqttUsername, this.mqttPassword, this.certPem, this.privateKeyPem, this.trustStorePem, config.cleanSessionFlag());
+            //System.out.println("Publisher created");
             this.bridgePublisher.addLastWill(config.topicLastWill(),
                     config.payloadLastWill(), config.qosLastWill(), config.timeStampEnabled(), config.retainedFlag(),
                     GetStandardZonedDateTimeFormatted.getStandardZonedDateTimeString());
+            //System.out.println("Last will added");
             //External Call bc Last will can be set
             this.bridgePublisher.connect();
+            //System.out.println("Connected");
+            //System.out.println(this.bridgePublisher.isConnected());
         }
 
     }
