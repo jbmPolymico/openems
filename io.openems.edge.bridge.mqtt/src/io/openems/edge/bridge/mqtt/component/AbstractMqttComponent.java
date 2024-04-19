@@ -145,7 +145,7 @@ public abstract class AbstractMqttComponent {
             try {
                 if (exMqtt[0] == null) {
                     this.mqttBridge.addMqttTask(this.id, value);
-                    this.log.info("Added Task: " + value.getTopic());
+                    this.log.info("Added sub Task: " + value.getTopic());
                 }
             } catch (MqttException e) {
                 exMqtt[0] = e;

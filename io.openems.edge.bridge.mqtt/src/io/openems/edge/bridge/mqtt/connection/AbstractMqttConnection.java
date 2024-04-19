@@ -1,14 +1,12 @@
 package io.openems.edge.bridge.mqtt.connection;
 
-import static io.openems.edge.bridge.mqtt.connection.MqttUtils.createSslSocketFactory;
 import static io.openems.edge.bridge.mqtt.api.ConfigurationSplits.PAYLOAD_MAPPING_SPLITTER;
+import static io.openems.edge.bridge.mqtt.connection.MqttUtils.createSslSocketFactory;
 
 
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.net.SocketFactory;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -74,7 +72,7 @@ public abstract class AbstractMqttConnection implements MqttConnection, MqttCall
         if (certPem != null && !certPem.isBlank() //
         		&& privateKeyPem != null && !privateKeyPem.isBlank() //
 				&& trustStorePem != null && !trustStorePem.isBlank()) {
-        	this.mqttConnectOptions.setSocketFactory(createSslSocketFactory(certPem, privateKeyPem, trustStorePem));
+        	this.mqttConnectOptions.setSocketFactory(createSslSocketFactory(certPem, privateKeyPem, trustStorePem, mqttPassword));
 		}
         
         this.mqttConnectOptions.setCleanSession(cleanSession);
@@ -127,7 +125,7 @@ public abstract class AbstractMqttConnection implements MqttConnection, MqttCall
                                          String password, String certPem, String privateKeyPem, String trustStorePem, boolean cleanSession) throws MqttException {
 
         this.createMqttSessionBasicSetup(broker, clientId, username, password, certPem, privateKeyPem, trustStorePem, cleanSession, keepAlive);
-
+        
     }
 
     /**
@@ -166,7 +164,7 @@ public abstract class AbstractMqttConnection implements MqttConnection, MqttCall
      */
     @Override
     public void connect() throws MqttException {
-        this.log.info("Connecting to Broker: " + this.mqttClient.getClientId());
+        this.log.info("Connecting to Broker: " + this.mqttClient.getServerURI());
         this.mqttClient.connect(this.mqttConnectOptions);
         this.log.info("Connected: " + this.mqttClient.getClientId());
     }

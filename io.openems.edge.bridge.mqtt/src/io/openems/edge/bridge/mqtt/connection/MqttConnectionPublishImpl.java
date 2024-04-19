@@ -30,8 +30,13 @@ public class MqttConnectionPublishImpl extends AbstractMqttConnection implements
         messageMqtt = new MqttMessage(message.getBytes());
         messageMqtt.setQos(qos);
         messageMqtt.setRetained(retainFlag);
-        super.mqttClient.publish(topic, messageMqtt);
-        super.log.info("Message published: " + messageMqtt);
+        try   {
+        	super.mqttClient.publish(topic, messageMqtt);
+        	super.log.info("Message published: " + messageMqtt);
+        } catch (Exception e) {
+        	super.log.info("Publish failed: " + e);
+        }
+        
     }
 
 }
