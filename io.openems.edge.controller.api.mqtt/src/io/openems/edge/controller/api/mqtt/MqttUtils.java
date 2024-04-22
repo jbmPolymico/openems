@@ -48,7 +48,7 @@ public class MqttUtils {
 			final String keyFile, final String caCrtFile, String password) {
 		
 		if (password == null || password.isBlank()) {
-			password ="noPasswd";
+			password ="noPasswd"; // Poor man solution for compensation for not using password.
 		}
 		
 		try {
