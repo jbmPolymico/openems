@@ -38,6 +38,16 @@
 	bnd.identity;id='org.apache.felix.fileinstall',\
 	bnd.identity;id='org.apache.felix.metatype',\
 	bnd.identity;id='io.openems.edge.application',\
+	bnd.identity;id='io.openems.edge.battery.bmw',\
+	bnd.identity;id='io.openems.edge.battery.bydcommercial',\
+	bnd.identity;id='io.openems.edge.battery.fenecon.commercial',\
+	bnd.identity;id='io.openems.edge.battery.fenecon.home',\
+	bnd.identity;id='io.openems.edge.battery.soltaro',\
+	bnd.identity;id='io.openems.edge.batteryinverter.kaco.blueplanetgridsave',\
+	bnd.identity;id='io.openems.edge.batteryinverter.refu88k',\
+	bnd.identity;id='io.openems.edge.batteryinverter.sinexcel',\
+	bnd.identity;id='io.openems.edge.batteryinverter.sunspec',\
+	bnd.identity;id='io.openems.edge.bosch.bpts5hybrid',\
 	bnd.identity;id='io.openems.edge.bridge.http',\
 	bnd.identity;id='io.openems.edge.bridge.mbus',\
 	bnd.identity;id='io.openems.edge.bridge.modbus',\
@@ -177,7 +187,7 @@
 	bnd.identity;id='io.openems.edge.timeofusetariff.tibber',\
 	bnd.identity;id='ecp.ems.edge.basiccontroller',\
 	bnd.identity;id='ecp.ems.edge.chp'
-
+	bnd.identity;id='io.openems.edge.bridge.mqtt'
 -runbundles: \
 	Java-WebSocket;version='[1.5.4,1.5.5)',\
 	bcpkix;version='[1.70.0,1.70.1)',\
@@ -193,9 +203,17 @@
 	io.openems.common;version=snapshot,\
 	io.openems.edge.application;version=snapshot,\
 	io.openems.edge.battery.api;version=snapshot,\
+	io.openems.edge.battery.bmw;version=snapshot,\
+	io.openems.edge.battery.bydcommercial;version=snapshot,\
+	io.openems.edge.battery.fenecon.commercial;version=snapshot,\
 	io.openems.edge.battery.fenecon.home;version=snapshot,\
+	io.openems.edge.battery.soltaro;version=snapshot,\
 	io.openems.edge.batteryinverter.api;version=snapshot,\
+	io.openems.edge.batteryinverter.kaco.blueplanetgridsave;version=snapshot,\
+	io.openems.edge.batteryinverter.refu88k;version=snapshot,\
 	io.openems.edge.batteryinverter.sinexcel;version=snapshot,\
+	io.openems.edge.batteryinverter.sunspec;version=snapshot,\
+	io.openems.edge.bosch.bpts5hybrid;version=snapshot,\
 	io.openems.edge.bridge.http;version=snapshot,\
 	io.openems.edge.bridge.mbus;version=snapshot,\
 	io.openems.edge.bridge.modbus;version=snapshot,\
@@ -380,6 +398,10 @@
 	org.apache.felix.scr;version='[2.2.10,2.2.11)',\
 	org.apache.felix.webconsole;version='[5.0.0,5.0.1)',\
 	org.apache.felix.webconsole.plugins.ds;version='[2.3.0,2.3.1)',\
+	org.eclipse.jetty.client;version='[9.4.28,9.4.29)',\
+	org.eclipse.jetty.http;version='[9.4.28,9.4.29)',\
+	org.eclipse.jetty.io;version='[9.4.28,9.4.29)',\
+	org.eclipse.jetty.util;version='[9.4.28,9.4.29)',\
 	org.eclipse.paho.mqttv5.client;version='[1.2.5,1.2.6)',\
 	org.jetbrains.kotlin.osgi-bundle;version='[1.9.23,1.9.24)',\
 	org.jsoup;version='[1.17.2,1.17.3)',\
@@ -394,5 +416,8 @@
 	org.owasp.encoder;version='[1.2.3,1.2.4)',\
 	reactive-streams;version='[1.0.4,1.0.5)',\
 	rrd4j;version='[3.9.0,3.9.1)',\
+	ecp.ems.edge.basiccontroller;version=snapshot,\
 	ecp.ems.edge.chp;version=snapshot,\
-	ecp.ems.edge.basiccontroller;version=snapshot
+	io.openems.edge.bridge.mqtt;version=snapshot,\
+	io.openems.wrapper.paho-mqttv3;version=snapshot,\
+	org.eclipse.paho.client.mqttv3;version='[1.2.5,1.2.6)'

@@ -1,4 +1,4 @@
-package io.openems.edge.controller.api.mqtt;
+package io.openems.edge.bridge.mqtt.connection;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -26,24 +26,7 @@ import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
  * This Utility class provides methods for handling MQTT-related operations.
  */
 public class MqttUtils {
-	
-	/**
-	 * Creates and returns an SSLSocketFactory for establishing secure connections
-	 * in MQTT.
-	 * 
-	 * <p>
-	 * This method initializes an SSL context using the provided certificate,
-	 * private key and server truststore information, allowing the creation of an
-	 * SSLSocketFactory with the configured security settings.
-	 * This implementation reads the files rather than taking the keys/certificates from 
-	 * input text files.
-	 * 
-	 * @param crtFile
-	 * @param keyFile
-	 * @param caCrtFile
-	 * @param password
-	 * @return
-	 */
+	//(certPem, privateKeyPem, trustStorePem, password)
 	public static SSLSocketFactory createSslSocketFactory(final String crtFile, 
 			final String keyFile, final String caCrtFile, String password) {
 		
@@ -53,7 +36,6 @@ public class MqttUtils {
 		
 		try {
 			
-		//password = "123456"; // TODO: Remove
 		Security.addProvider(new BouncyCastleProvider());
 
 		// load CA certificate
@@ -75,7 +57,7 @@ public class MqttUtils {
 		X509Certificate cert = null;
 		while (bis.available() > 0) {
 			cert = (X509Certificate) cf.generateCertificate(bis);
-			// System.out.println(caCert.toString());
+			//System.out.println(cert.toString());
 		}
 
 		// load client private key
@@ -120,7 +102,7 @@ public class MqttUtils {
 
 		return context.getSocketFactory();	
 		} catch (Exception e) {
-		//System.out.println("SSL not succesfull");
+		System.out.println("SSL not succesfull"); //TODO: Remove
 		
 		throw new RuntimeException("Error creating SSLSocketFactory", e);
 	}
