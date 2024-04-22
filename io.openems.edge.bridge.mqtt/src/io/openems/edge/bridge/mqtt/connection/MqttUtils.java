@@ -29,11 +29,9 @@ public class MqttUtils {
 	//(certPem, privateKeyPem, trustStorePem, password)
 	public static SSLSocketFactory createSslSocketFactory(final String crtFile, 
 			final String keyFile, final String caCrtFile, String password) {
-		
 		if (password == null || password.isBlank()) {
 			password ="noPasswd"; // Poor man solution for compensation for not using password.
 		}
-		
 		try {
 			
 		Security.addProvider(new BouncyCastleProvider());
