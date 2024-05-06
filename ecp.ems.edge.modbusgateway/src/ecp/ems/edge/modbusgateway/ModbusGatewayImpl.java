@@ -2,7 +2,6 @@ package ecp.ems.edge.modbusgateway;
 
 import static io.openems.edge.bridge.modbus.api.ElementToChannelConverter.SCALE_FACTOR_MINUS_1;
 import static io.openems.edge.bridge.modbus.api.ElementToChannelConverter.SCALE_FACTOR_MINUS_2;
-import static io.openems.edge.bridge.modbus.api.ElementToChannelConverter.DIVIDE;
 
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
@@ -22,7 +21,6 @@ import io.openems.edge.bridge.modbus.api.BridgeModbus;
 import io.openems.edge.bridge.modbus.api.ModbusComponent;
 import io.openems.edge.bridge.modbus.api.ModbusProtocol;
 import io.openems.edge.bridge.modbus.api.element.CoilElement;
-import io.openems.edge.bridge.modbus.api.element.SignedWordElement;
 import io.openems.edge.bridge.modbus.api.element.SignedWordElementFloat;
 import io.openems.edge.bridge.modbus.api.element.UnsignedWordElement;
 import io.openems.edge.bridge.modbus.api.element.UnsignedWordElementFloat;
@@ -101,6 +99,7 @@ public class ModbusGatewayImpl extends AbstractOpenemsModbusComponent
 						m(ModbusGateway.ChannelId.STORAGE_SEQUENCE_FOUND, new CoilElement(5))//
 				),
 				
+				/*
 				new FC4ReadInputRegistersTask(0, Priority.LOW,//
 						m(ModbusGateway.ChannelId.STORAGE_TOP_TEMPERATURE, new SignedWordElementFloat(0), SCALE_FACTOR_MINUS_2),//
 						m(ModbusGateway.ChannelId.STORAGE_BOTTOM_TEMPERATURE, new SignedWordElement(1), SCALE_FACTOR_MINUS_2),//
@@ -135,9 +134,10 @@ public class ModbusGatewayImpl extends AbstractOpenemsModbusComponent
 						m(ModbusGateway.ChannelId.GRID_FREQUENCY, new UnsignedWordElementFloat(50), SCALE_FACTOR_MINUS_2),//
 						m(ModbusGateway.ChannelId.SYSTEM_STATUS, new UnsignedWordElement(51))//
 				)
+				*/
 
 
-				/*
+				
 				new FC4ReadInputRegistersTask(0, Priority.LOW,//
 						m(ModbusGateway.ChannelId.STORAGE_TOP_TEMPERATURE, new SignedWordElementFloat(0), SCALE_FACTOR_MINUS_2),// 0x0000
 						m(ModbusGateway.ChannelId.STORAGE_BOTTOM_TEMPERATURE, new SignedWordElementFloat(1), SCALE_FACTOR_MINUS_2),// 0x0001
@@ -189,7 +189,7 @@ public class ModbusGatewayImpl extends AbstractOpenemsModbusComponent
 						m(ModbusGateway.ChannelId.GRID_FREQUENCY, new UnsignedWordElementFloat(50), SCALE_FACTOR_MINUS_2),// 0x0032
 						m(ModbusGateway.ChannelId.SYSTEM_STATUS, new UnsignedWordElement(51))// 0x0033
 				)
-				*/
+				
 				);
 		
 	}
