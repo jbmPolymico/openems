@@ -22,7 +22,7 @@ public class UnsignedWordElementFloat extends AbstractSingleWordElement<Unsigned
 
 	@Override
 	protected Float byteBufferToValue(ByteBuffer buff) {
-		return buff.getFloat(0);
+		return (float)buff.getShort(0);
 	}
 
 	@Override

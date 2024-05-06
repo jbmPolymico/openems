@@ -6,7 +6,7 @@ import io.openems.common.types.OpenemsType;
 import io.openems.edge.common.type.TypeUtils;
 
 /**
- * An SignedWordElement interpreted as a Float by scaling using an Integer value in an
+ * An SignedWordElementFloat represents a Float by scaling using an Integer value in an
  * {@link AbstractSingleWordElement}.
  */
 public class SignedWordElementFloat extends AbstractSingleWordElement<SignedWordElementFloat, Float> {
@@ -22,7 +22,7 @@ public class SignedWordElementFloat extends AbstractSingleWordElement<SignedWord
 	
 	@Override
 	protected Float byteBufferToValue(ByteBuffer buff) {
-		return buff.getFloat(0);
+		return (float)buff.getShort(0);
 	}
 
 	@Override

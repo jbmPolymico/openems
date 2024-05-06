@@ -51,6 +51,7 @@ public abstract sealed class ModbusElement permits AbstractModbusElement {
 	}
 
 	public final Task getModbusTask() {
+		System.out.println("Task: " + task);
 		return this.task;
 	}
 
