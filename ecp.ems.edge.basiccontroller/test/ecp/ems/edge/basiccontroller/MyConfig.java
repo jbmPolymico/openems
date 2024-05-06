@@ -34,6 +34,8 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 			this.loadLevelChannelAddress = loadLevelChannelAddress;
 			return this;
 		}
+		
+
 
 //		public Builder setSetting0(String setting0) {
 //			this.setting0 = setting0;
@@ -78,6 +80,8 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+
 
 //	@Override
 //	public String setting0() {

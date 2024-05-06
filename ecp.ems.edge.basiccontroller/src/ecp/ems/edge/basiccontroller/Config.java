@@ -25,7 +25,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	
 	@AttributeDefinition(name = "Load Level Channel", description = "Channel address of the Load Level channel")
 	String loadLevelChannelAddress();
-
+	
 	String webconsole_configurationFactory_nameHint() default "Controller ecp.ems.edge.basiccontroller [{id}]";
 
 }

@@ -10,6 +10,7 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 		private String id;
 		private String modbusId;
 		private int modbusUnitId;
+		private int modbusSlowReadDelay;
 
 		private Builder() {
 		}
@@ -26,6 +27,11 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 
 		public Builder setModbusUnitId(int modbusUnitId) {
 			this.modbusUnitId = modbusUnitId;
+			return this;
+		}
+		
+		public Builder setModbusSlowReadDelay(int modbusSlowReadDelay) {
+			this.modbusSlowReadDelay = modbusSlowReadDelay;
 			return this;
 		}
 
@@ -63,6 +69,11 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 	@Override
 	public int modbusUnitId() {
 		return this.builder.modbusUnitId;
+	}
+	
+	@Override
+	public int modbusSlowReadDelay() {
+		return this.builder.modbusSlowReadDelay;
 	}
 
 	/**
