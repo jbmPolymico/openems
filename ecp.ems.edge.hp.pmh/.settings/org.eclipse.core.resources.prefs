@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/ecp/ems/edge/hp/pmh/Config.java=UTF-8
+encoding//src/ecp/ems/edge/hp/pmh/PmhModbus.java=UTF-8
+encoding//src/ecp/ems/edge/hp/pmh/PmhModbusImpl.java=UTF-8
+encoding//test/ecp/ems/edge/hp/pmh/MyConfig.java=UTF-8
+encoding//test/ecp/ems/edge/hp/pmh/MyModbusDeviceTest.java=UTF-8
+encoding/<project>=UTF-8
+encoding/bnd.bnd=UTF-8
+encoding/readme.adoc=UTF-8
