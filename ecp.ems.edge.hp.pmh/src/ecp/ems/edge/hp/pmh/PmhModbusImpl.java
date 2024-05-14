@@ -357,16 +357,12 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 							m(PmhModbus.ChannelId.DHW_RESTART_DELTAT, new UnsignedWordElement(65)), // 0x0041
 							new DummyRegisterElement(66,71), // 0x0042-0x0047 No assigned value to these registers.
 							m(PmhModbus.ChannelId.DHW_STORAGE_ENABLE, new UnsignedWordElement(72)), // 0x0048
-							m(PmhModbus.ChannelId.DHW_REHEATING_ENABLE, new UnsignedWordElement(73)), // 0x0049
-							new DummyRegisterElement(74,75),/*
-							m(PmhModbus.ChannelId.DHW_TIMER_SUNDAY, new UnsignedWordElement(76)),// 0x004C
-							m(PmhModbus.ChannelId.DHW_TIMER_MONDAY, new UnsignedWordElement(77)),// 0x004D
-							m(PmhModbus.ChannelId.DHW_TIMER_TUESDAY, new UnsignedWordElement(78)),// 0x004E
-							m(PmhModbus.ChannelId.DHW_TIMER_WEDNESDAY, new UnsignedWordElement(79)),// 0x004F
-							m(PmhModbus.ChannelId.DHW_TIMER_THURSDAY, new UnsignedWordElement(80)),// 0x0050
-							m(PmhModbus.ChannelId.DHW_TIMER_FRIDAY, new UnsignedWordElement(81)),// 0x0051
-							m(PmhModbus.ChannelId.DHW_TIMER_SATURDAY, new UnsignedWordElement(82)),// 0x0052*/
-							new DummyRegisterElement(83,89),
+							m(PmhModbus.ChannelId.DHW_REHEATING_ENABLE, new UnsignedWordElement(73)) // 0x0049
+							),
+							// registers 74,75) are not used
+							// registers 76-89 are handled by enable disable function
+							
+					new FC16WriteRegistersTask(90,
 							m(PmhModbus.ChannelId.CIRCUIT2_ENABLE, new UnsignedWordElement(90)), // 0x005A
 							m(PmhModbus.ChannelId.CIRCUIT2_COOLING_SETPOINT, new UnsignedWordElement(91)), // 0x005B
 							m(PmhModbus.ChannelId.CIRCUIT2_HEATINGCURVE_ENABLE, new UnsignedWordElement(92)), // 0x005C
