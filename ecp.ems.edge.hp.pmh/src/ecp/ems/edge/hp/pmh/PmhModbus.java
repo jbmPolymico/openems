@@ -93,11 +93,14 @@ public interface PmhModbus extends OpenemsComponent {
 				.unit(Unit.DEGREE_CELSIUS)
 				.onChannelSetNextWriteMirrorToDebugChannel(COOLING_SETPOINT_DEBUG)),
 		
-		HEATING_CURVE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x001E
+		HEATING_CURVE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)
+				.<PmhModbusImpl>onChannelChange(
+						PmhModbusImpl::handleHeatCurve1)), // 0x001E
 		HEATING_CURVE_ENABLE(Doc.of(OpenemsType.INTEGER)
 				.accessMode(AccessMode.READ_WRITE)
 				.unit(Unit.ON_OFF)
-				.onChannelSetNextWriteMirrorToDebugChannel(HEATING_CURVE_ENABLE_DEBUG)),
+				.onChannelSetNextWriteMirrorToDebugChannel(HEATING_CURVE_ENABLE_DEBUG)
+				.text("Heating curve enable/disable")),
 		
 		HEATING_SETPOINT_NOCURVE_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x002C
 		HEATING_SETPOINT_NOCURVE(Doc.of(OpenemsType.INTEGER)
@@ -141,17 +144,23 @@ public interface PmhModbus extends OpenemsComponent {
 				.unit(Unit.DEGREE_CELSIUS)
 				.onChannelSetNextWriteMirrorToDebugChannel(DHW_RESTART_DELTAT_DEBUG)),
 		
-		DHW_STORAGE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x0048
+		DHW_STORAGE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)
+				.<PmhModbusImpl>onChannelChange(
+						PmhModbusImpl::handleDhwStorageTimer)), // 0x0048
 		DHW_STORAGE_ENABLE(Doc.of(OpenemsType.INTEGER)
 				.accessMode(AccessMode.READ_WRITE)
 				.unit(Unit.ON_OFF)
-				.onChannelSetNextWriteMirrorToDebugChannel(DHW_STORAGE_ENABLE_DEBUG)),
+				.onChannelSetNextWriteMirrorToDebugChannel(DHW_STORAGE_ENABLE_DEBUG)
+				.text("DHW storage timer enable/disable")),
 		
-		DHW_REHEATING_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x0049
+		DHW_REHEATING_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)
+				.<PmhModbusImpl>onChannelChange(
+						PmhModbusImpl::handleDhwStorageTimer)), // 0x0049
 		DHW_REHEATING_ENABLE(Doc.of(OpenemsType.INTEGER)
 				.accessMode(AccessMode.READ_WRITE)
 				.unit(Unit.ON_OFF)
-				.onChannelSetNextWriteMirrorToDebugChannel(DHW_REHEATING_ENABLE_DEBUG)),
+				.onChannelSetNextWriteMirrorToDebugChannel(DHW_REHEATING_ENABLE_DEBUG)
+				.text("DHW storage timer enable/disable")),
 		
 		DHW_TIMER_SUNDAY_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x004C
 		DHW_TIMER_SUNDAY(Doc.of(OpenemsType.INTEGER)
@@ -207,11 +216,14 @@ public interface PmhModbus extends OpenemsComponent {
 				.unit(Unit.DEGREE_CELSIUS)
 				.onChannelSetNextWriteMirrorToDebugChannel(CIRCUIT2_COOLING_SETPOINT_DEBUG)),
 		
-		CIRCUIT2_HEATINGCURVE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x005C
+		CIRCUIT2_HEATINGCURVE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)
+				.<PmhModbusImpl>onChannelChange(
+						PmhModbusImpl::handleHeatCurve2)), // 0x005C
 		CIRCUIT2_HEATINGCURVE_ENABLE(Doc.of(OpenemsType.INTEGER)
 				.accessMode(AccessMode.READ_WRITE)
 				.unit(Unit.ON_OFF)
-				.onChannelSetNextWriteMirrorToDebugChannel(CIRCUIT2_HEATINGCURVE_ENABLE_DEBUG)),
+				.onChannelSetNextWriteMirrorToDebugChannel(CIRCUIT2_HEATINGCURVE_ENABLE_DEBUG)
+				.text("Heating curve for circuit 2 enable/disable")),
 		
 		CIRCUIT2_HEATING_SETPOINT_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x0062
 		CIRCUIT2_HEATING_SETPOINT(Doc.of(OpenemsType.INTEGER)
@@ -220,11 +232,14 @@ public interface PmhModbus extends OpenemsComponent {
 				.onChannelSetNextWriteMirrorToDebugChannel(CIRCUIT2_HEATING_SETPOINT_DEBUG)),
 		
 		
-		SLEEP_MODE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x0065
+		SLEEP_MODE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)
+				.<PmhModbusImpl>onChannelChange(
+						PmhModbusImpl::handleSleepMode)), // 0x0065
 		SLEEP_MODE_ENABLE(Doc.of(OpenemsType.INTEGER)
 				.accessMode(AccessMode.READ_WRITE)
 				.unit(Unit.ON_OFF)
-				.onChannelSetNextWriteMirrorToDebugChannel(SLEEP_MODE_ENABLE_DEBUG)),
+				.onChannelSetNextWriteMirrorToDebugChannel(SLEEP_MODE_ENABLE_DEBUG)
+				.text("Sleep mode enable/disable")),
 		
 		SLEEP_MODE_DELTA_T_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x0066
 		SLEEP_MODE_DELTA_T(Doc.of(OpenemsType.INTEGER)
@@ -275,11 +290,14 @@ public interface PmhModbus extends OpenemsComponent {
 				.onChannelSetNextWriteMirrorToDebugChannel(SLEEP_MODE_TIMER_SATURDAY_DEBUG)),
 		
 		
-		LOW_NOISE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x006E
+		LOW_NOISE_ENABLE_DEBUG(Doc.of(OpenemsType.INTEGER)
+				.<PmhModbusImpl>onChannelChange(
+						PmhModbusImpl::handleLowNoiseMode)), // 0x006E
 		LOW_NOISE_ENABLE(Doc.of(OpenemsType.INTEGER)
 				.accessMode(AccessMode.READ_WRITE)
 				.unit(Unit.ON_OFF)
-				.onChannelSetNextWriteMirrorToDebugChannel(LOW_NOISE_ENABLE_DEBUG)),
+				.onChannelSetNextWriteMirrorToDebugChannel(LOW_NOISE_ENABLE_DEBUG)
+				.text("Low noise mode enable/disable")),
 		
 		LOW_NOISE_DELTA_T_DEBUG(Doc.of(OpenemsType.INTEGER)), // 0x006F
 		LOW_NOISE_DELTA_T(Doc.of(OpenemsType.INTEGER)
@@ -389,7 +407,10 @@ public interface PmhModbus extends OpenemsComponent {
 		
 		TIMER_ACTIVE(Doc.of(OpenemsType.INTEGER) // 0x0012 
 				.accessMode(AccessMode.READ_ONLY)
-				.unit(Unit.ON_OFF)),
+				.unit(Unit.ON_OFF)
+				.text("Timer enable/disble from display")
+				.<PmhModbusImpl>onChannelChange(
+						PmhModbusImpl::handleTimer)),
 		
 		SUNDAY_TIMER(Doc.of(OpenemsType.INTEGER) // 0x0013 
 				.accessMode(AccessMode.READ_ONLY)
