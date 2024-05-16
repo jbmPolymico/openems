@@ -30,6 +30,7 @@ import io.openems.edge.bridge.modbus.api.element.UnsignedWordElement;
 import io.openems.edge.bridge.modbus.api.element.UnsignedWordElementFloat;
 import io.openems.edge.bridge.modbus.api.task.FC16WriteRegistersTask;
 import io.openems.edge.bridge.modbus.api.task.FC3ReadRegistersTask;
+import io.openems.edge.bridge.modbus.api.task.FC6WriteRegisterTask;
 import io.openems.edge.bridge.modbus.api.task.Task;
 import io.openems.edge.common.channel.Channel;
 import io.openems.edge.common.component.OpenemsComponent;
@@ -47,6 +48,109 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 	private ConfigurationAdmin cm;
 	
 	private final Logger log = LoggerFactory.getLogger(PmhModbusImpl.class);
+	
+	private final Task handleTimerReadTask = new FC3ReadRegistersTask(19, Priority.LOW,				
+			m(PmhModbus.ChannelId.SUNDAY_TIMER, new UnsignedWordElement(19)), // 0x0013
+			m(PmhModbus.ChannelId.MONDAY_TIMER, new UnsignedWordElement(20)), // 0x0014
+			m(PmhModbus.ChannelId.TUESDAY_TIMER, new UnsignedWordElement(21)), // 0x0015
+			m(PmhModbus.ChannelId.WEDNESDAY_TIMER, new UnsignedWordElement(22)), // 0x0016
+			m(PmhModbus.ChannelId.THURSDAY_TIMER, new UnsignedWordElement(23)), // 0x0017
+			m(PmhModbus.ChannelId.FRIDAY_TIMER, new UnsignedWordElement(24)), // 0x0018
+			m(PmhModbus.ChannelId.SATURDAY_TIMER, new UnsignedWordElement(25)) // 0x0019 */
+			);
+	
+	private final Task heatingCurve1ReadTask = new FC3ReadRegistersTask(31, Priority.LOW,
+			m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE1, new SignedWordElement(31)), //0x001F
+			m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE2, new SignedWordElement(32)), //0x0020
+			m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE3, new SignedWordElement(33)), //0x0021
+			m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE4, new SignedWordElement(34)), //0x0022
+			m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE5, new SignedWordElement(35)), //0x0023
+			m(PmhModbus.ChannelId.SETPOINT1, new UnsignedWordElement(36)), // 0x0024
+			m(PmhModbus.ChannelId.SETPOINT2, new UnsignedWordElement(37)), // 0x0025
+			m(PmhModbus.ChannelId.SETPOINT3, new UnsignedWordElement(38)), // 0x0026
+			m(PmhModbus.ChannelId.SETPOINT4, new UnsignedWordElement(39)), // 0x0027
+			m(PmhModbus.ChannelId.SETPOINT5, new UnsignedWordElement(40)) // 0x0028
+		);
+	
+	private final Task handleDhwStorageReadTask = new FC3ReadRegistersTask(76, Priority.LOW,
+			m(PmhModbus.ChannelId.DHW_TIMER_SUNDAY, new UnsignedWordElement(76)),// 0x004C
+			m(PmhModbus.ChannelId.DHW_TIMER_MONDAY, new UnsignedWordElement(77)),// 0x004D
+			m(PmhModbus.ChannelId.DHW_TIMER_TUESDAY, new UnsignedWordElement(78)),// 0x004E
+			m(PmhModbus.ChannelId.DHW_TIMER_WEDNESDAY, new UnsignedWordElement(79)),// 0x004F
+			m(PmhModbus.ChannelId.DHW_TIMER_THURSDAY, new UnsignedWordElement(80)),// 0x0050
+			m(PmhModbus.ChannelId.DHW_TIMER_FRIDAY, new UnsignedWordElement(81)),// 0x0051
+			m(PmhModbus.ChannelId.DHW_TIMER_SATURDAY, new UnsignedWordElement(82)),// 0x0052
+			m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_SUNDAY, new UnsignedWordElement(83)),// 0x0053
+			m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_MONDAY, new UnsignedWordElement(84)),// 0x0054
+			m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_TUESDAY, new UnsignedWordElement(85)),// 0x0055
+			m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_WEDNESDAY, new UnsignedWordElement(86)),// 0x0056
+			m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_THURSDAY, new UnsignedWordElement(87)),// 0x0057
+			m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_FRIDAY, new UnsignedWordElement(88)),// 0x0058
+			m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_SATURDAY, new UnsignedWordElement(89))// 0x0059
+			);
+	
+	private final Task handleDhwStorageWriteTask = new FC16WriteRegistersTask(76,
+			m(PmhModbus.ChannelId.DHW_TIMER_SUNDAY, new UnsignedWordElement(76)),// 0x004C
+			m(PmhModbus.ChannelId.DHW_TIMER_MONDAY, new UnsignedWordElement(77)),// 0x004D
+			m(PmhModbus.ChannelId.DHW_TIMER_TUESDAY, new UnsignedWordElement(78)),// 0x004E
+			m(PmhModbus.ChannelId.DHW_TIMER_WEDNESDAY, new UnsignedWordElement(79)),// 0x004F
+			m(PmhModbus.ChannelId.DHW_TIMER_THURSDAY, new UnsignedWordElement(80)),// 0x0050
+			m(PmhModbus.ChannelId.DHW_TIMER_FRIDAY, new UnsignedWordElement(81)),// 0x0051
+			m(PmhModbus.ChannelId.DHW_TIMER_SATURDAY, new UnsignedWordElement(82))// 0x0052)
+			);
+	
+	private final Task heatingCurve2ReadTask = new FC3ReadRegistersTask(93, Priority.LOW,
+			m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT1, new UnsignedWordElement(93)), // 0x005D
+			m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT2, new UnsignedWordElement(94)), // 0x005E
+			m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT3, new UnsignedWordElement(95)), // 0x005F
+			m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT4, new UnsignedWordElement(96)), // 0x0060
+			m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT5, new UnsignedWordElement(97))  // 0x0061		
+	);
+	
+	private final Task sleepingModeWriteTask = new FC16WriteRegistersTask(102,
+			m(PmhModbus.ChannelId.SLEEP_MODE_DELTA_T, new UnsignedWordElement(102)), // 0x0066
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SUNDAY, new UnsignedWordElement(103)), //0x0067
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_MONDAY, new UnsignedWordElement(104)), //0x0068
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_TUESDAY, new UnsignedWordElement(105)), //0x0069
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_WEDNESDAY, new UnsignedWordElement(106)), //0x006A
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_THURSDAY, new UnsignedWordElement(107)), //0x006B
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_FRIDAY, new UnsignedWordElement(108)), //0x006C
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SATURDAY, new UnsignedWordElement(109)) //0x006D
+			);
+	
+	private final Task sleepingModeReadTask = new FC3ReadRegistersTask(102, Priority.LOW,
+			m(PmhModbus.ChannelId.SLEEP_MODE_DELTA_T, new UnsignedWordElement(102)), // 0x0066
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SUNDAY, new UnsignedWordElement(103)), //0x0067
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_MONDAY, new UnsignedWordElement(104)), //0x0068
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_TUESDAY, new UnsignedWordElement(105)), //0x0069
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_WEDNESDAY, new UnsignedWordElement(106)), //0x006A
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_THURSDAY, new UnsignedWordElement(107)), //0x006B
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_FRIDAY, new UnsignedWordElement(108)), //0x006C
+			m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SATURDAY, new UnsignedWordElement(109)) //0x006D
+			);
+	
+	private final Task lowNoiseWriteTask = new FC16WriteRegistersTask(111,
+			m(PmhModbus.ChannelId.LOW_NOISE_DELTA_T, new UnsignedWordElement(111)), // 0x006F
+	        m(PmhModbus.ChannelId.LOW_NOISE_TIMER_SUNDAY, new UnsignedWordElement(112)), // 0x0070
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_MONDAY, new UnsignedWordElement(113)), // 0x0071
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_TUESDAY, new UnsignedWordElement(114)), // 0x0072
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_WEDNESDAY, new UnsignedWordElement(115)), // 0x0073
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_THURSDAY, new UnsignedWordElement(116)), // 0x0074
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_FRIDAY, new UnsignedWordElement(117)), // 0x0075
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_SATURDAY, new UnsignedWordElement(118)) // 0x0076
+    );
+
+	private final Task lowNoiseReadTask = new FC3ReadRegistersTask(111, Priority.LOW,
+            m(PmhModbus.ChannelId.LOW_NOISE_DELTA_T, new UnsignedWordElement(111)), // 0x006F
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_SUNDAY, new UnsignedWordElement(112)), // 0x0070
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_MONDAY, new UnsignedWordElement(113)), // 0x0071
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_TUESDAY, new UnsignedWordElement(114)), // 0x0072
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_WEDNESDAY, new UnsignedWordElement(115)), // 0x0073
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_THURSDAY, new UnsignedWordElement(116)), // 0x0074
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_FRIDAY, new UnsignedWordElement(117)), // 0x0075
+            m(PmhModbus.ChannelId.LOW_NOISE_TIMER_SATURDAY, new UnsignedWordElement(118)) // 0x0076
+    );
+	
 
 	@Reference(policy = ReferencePolicy.STATIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.MANDATORY)
 	protected void setModbus(BridgeModbus modbus) {
@@ -365,12 +469,18 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 					new FC16WriteRegistersTask(90,
 							m(PmhModbus.ChannelId.CIRCUIT2_ENABLE, new UnsignedWordElement(90)), // 0x005A
 							m(PmhModbus.ChannelId.CIRCUIT2_COOLING_SETPOINT, new UnsignedWordElement(91)), // 0x005B
-							m(PmhModbus.ChannelId.CIRCUIT2_HEATINGCURVE_ENABLE, new UnsignedWordElement(92)), // 0x005C
-							new DummyRegisterElement(93,97), // Heat curve 2 setpoint values.
-							m(PmhModbus.ChannelId.CIRCUIT2_HEATING_SETPOINT, new UnsignedWordElement(98)), //0x0062
-							new DummyRegisterElement(99,100),
-							m(PmhModbus.ChannelId.SLEEP_MODE_ENABLE, new UnsignedWordElement(101)), // 0x0065
-							new DummyRegisterElement(102,109), // Sleep mode parameters
+							m(PmhModbus.ChannelId.CIRCUIT2_HEATINGCURVE_ENABLE, new UnsignedWordElement(92)) // 0x005C
+							),
+		
+					new FC6WriteRegisterTask(98,
+							m(PmhModbus.ChannelId.CIRCUIT2_HEATING_SETPOINT, new UnsignedWordElement(98))//0x0062)
+							), 
+							
+					new FC6WriteRegisterTask(101,		
+							m(PmhModbus.ChannelId.SLEEP_MODE_ENABLE, new UnsignedWordElement(101)) // 0x0065
+							),
+					
+					new FC6WriteRegisterTask(110,
 							m(PmhModbus.ChannelId.LOW_NOISE_ENABLE, new UnsignedWordElement(110)) // 0x006E
 							//new DummyRegisterElement(111,118), // Low noise parameters
 							//new DummyRegisterElement(119,132), // 0x0077-0x007D No assigned value to these registers.
@@ -387,43 +497,58 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 				);
 	}
 	
+	
 	/**
-	 * Handle timer modbus elements
+	 * 
+	 * Modify modbus protocol to include timer data when enabled
+	 * 
+	 * @param heatingTimerState
+	 * @throws OpenemsException
+	 */
+	private synchronized void handleheatingTimerProtocol(boolean heatingTimerState) throws OpenemsException {
+		if (heatingTimerState) {
+			try {
+				this.getModbusProtocol().addTask(this.handleTimerReadTask);
+			} catch (OpenemsException e) {
+				this.logError(this.log,  "Unable to add timer data to protocol: " + e.getMessage());
+				}
+		} else if (!heatingTimerState) {
+			try {
+				this.getModbusProtocol().removeTask(this.handleTimerReadTask);
+				
+				// Reset unused channels to null
+				this.channel(PmhModbus.ChannelId.SUNDAY_TIMER).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.MONDAY_TIMER).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.TUESDAY_TIMER).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.WEDNESDAY_TIMER).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.THURSDAY_TIMER).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.FRIDAY_TIMER).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SATURDAY_TIMER).setNextValue(null);
+				
+			} catch (OpenemsException e) {
+				this.logError(this.log,  "Unable to remove time data from protocol: " + e.getMessage());
+			}
+		}
+	}
+	
+	
+	/**
+	 * Calling modbus modifier method for timer elements
 	 * 
 	 */
 	protected synchronized void handleTimer() {
-		
-		final Task ReadTask = new FC3ReadRegistersTask(19, Priority.LOW,				
-				m(PmhModbus.ChannelId.SUNDAY_TIMER, new UnsignedWordElement(19)), // 0x0013
-				m(PmhModbus.ChannelId.MONDAY_TIMER, new UnsignedWordElement(20)), // 0x0014
-				m(PmhModbus.ChannelId.TUESDAY_TIMER, new UnsignedWordElement(21)), // 0x0015
-				m(PmhModbus.ChannelId.WEDNESDAY_TIMER, new UnsignedWordElement(22)), // 0x0016
-				m(PmhModbus.ChannelId.THURSDAY_TIMER, new UnsignedWordElement(23)), // 0x0017
-				m(PmhModbus.ChannelId.FRIDAY_TIMER, new UnsignedWordElement(24)), // 0x0018
-				m(PmhModbus.ChannelId.SATURDAY_TIMER, new UnsignedWordElement(25)) // 0x0019 */
-				);
-				
 		Channel<Integer> timerEnabled = this.channel(PmhModbus.ChannelId.TIMER_ACTIVE);
-		
-		var timerEnableState = timerEnabled.value(); 
-		
-		if (timerEnableState.get() == 1) {
 
-			try {
-				this.getModbusProtocol().addTask(ReadTask);
-				} catch (OpenemsException e) {
-					this.logError(this.log, "Unable to enableTimer:  " + e.getMessage());				
-				}
-		} else if(! (timerEnableState.get() == 1)) { // Remove elements from modbus Protocol
-			
-			try {
-				this.getModbusProtocol().removeTask(ReadTask);
-			} catch (OpenemsException e) {
-				this.logError(this.log, "Unable to disableTimer:  " + e.getMessage());				
-			}
-			
+		var timerEnableState = timerEnabled.value().get() == 1; 
+		
+		try {
+			handleheatingTimerProtocol(timerEnableState);
+		} catch (OpenemsException e) {
+			this.logError(this.log, "Timer handling failed");
 		}
 	}
+	
+	
 	
 	/**
 	 * Modifying modbus protocol by adding heat curve points
@@ -432,35 +557,36 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 	 * @throws OpenemsException
 	 */
 	private synchronized void handleHeatCurve1Protocol(boolean heatingCurveState) throws OpenemsException {
-		final Task ReadTask = new FC3ReadRegistersTask(31, Priority.LOW,
-				m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE1, new SignedWordElement(31)), //0x001F
-				m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE2, new SignedWordElement(32)), //0x0020
-				m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE3, new SignedWordElement(33)), //0x0021
-				m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE4, new SignedWordElement(34)), //0x0022
-				m(PmhModbus.ChannelId.AMBIENT_TEMPERATURE5, new SignedWordElement(35)), //0x0023
-				m(PmhModbus.ChannelId.SETPOINT1, new UnsignedWordElement(36)), // 0x0024
-				m(PmhModbus.ChannelId.SETPOINT2, new UnsignedWordElement(37)), // 0x0025
-				m(PmhModbus.ChannelId.SETPOINT3, new UnsignedWordElement(38)), // 0x0026
-				m(PmhModbus.ChannelId.SETPOINT4, new UnsignedWordElement(39)), // 0x0027
-				m(PmhModbus.ChannelId.SETPOINT5, new UnsignedWordElement(40)) // 0x0028
-			);
-		
+	
 		if (heatingCurveState) {
 			try {
-				this.getModbusProtocol().addTask(ReadTask);
+				this.getModbusProtocol().addTask(this.heatingCurve1ReadTask);
 			} catch (OpenemsException e) {
 				this.logError(this.log,  "Unable to add heat curve 1 to protocol: " + e.getMessage());
 				}
 		} else if (!heatingCurveState) {
 			try {
-				this.getModbusProtocol().removeTask(ReadTask);
+				this.getModbusProtocol().removeTask(this.heatingCurve1ReadTask);
+				
+				// Clear channels after removing task
+				this.channel(PmhModbus.ChannelId.AMBIENT_TEMPERATURE1).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.AMBIENT_TEMPERATURE2).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.AMBIENT_TEMPERATURE3).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.AMBIENT_TEMPERATURE4).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.AMBIENT_TEMPERATURE5).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SETPOINT1).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SETPOINT2).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SETPOINT3).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SETPOINT4).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SETPOINT5).setNextValue(null);
+				
 			} catch (OpenemsException e) {
-				this.logError(this.log,  "Unable to add heat curve 1 from protocol: " + e.getMessage());
+				this.logError(this.log,  "Unable to remove heat curve 1 from protocol: " + e.getMessage());
 			}
 		}
-		
-		
 	}
+	
+	
 	
 	/**
 	 *  Calling Modbus protocol modifier when heating curve is enabled/disabled 
@@ -477,6 +603,8 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 		}
 	}
 	
+	
+	
 	/**
 	 * Modifying modbus protocol by adding circuit 2 heat curve points
 	 * 
@@ -484,31 +612,32 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 	 * @throws OpenemsException
 	 */
 	private synchronized void handleHeatCurve2Protocol(boolean heatingCurveState) throws OpenemsException {
-		final Task ReadTask = new FC3ReadRegistersTask(93, Priority.LOW,
-				m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT1, new UnsignedWordElement(93)), // 0x005D
-				m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT2, new UnsignedWordElement(94)), // 0x005E
-				m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT3, new UnsignedWordElement(95)), // 0x005F
-				m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT4, new UnsignedWordElement(96)), // 0x0060
-				m(PmhModbus.ChannelId.CIRCUIT2_SETPOINT5, new UnsignedWordElement(97))  // 0x0061
-			);
-		
-		
+	
 		if (heatingCurveState) {
 			try {				
-				this.getModbusProtocol().addTask(ReadTask);
+				this.getModbusProtocol().addTask(this.heatingCurve2ReadTask);
 			} catch (OpenemsException e) {
 				this.logError(this.log,  "Unable to add heat curve 2 to protocol: " + e.getMessage());
 			}
 		} else if (!heatingCurveState) {
 			try {
-				this.getModbusProtocol().removeTask(ReadTask);
+				this.getModbusProtocol().removeTask(this.heatingCurve2ReadTask);
+				
+				// Resetting channels when removing task
+				this.channel(PmhModbus.ChannelId.CIRCUIT2_SETPOINT1).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.CIRCUIT2_SETPOINT2).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.CIRCUIT2_SETPOINT3).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.CIRCUIT2_SETPOINT4).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.CIRCUIT2_SETPOINT5).setNextValue(null);
+				
 			} catch (OpenemsException e) {
-				this.logError(this.log,  "Unable to add heat curve 2 from protocol: " + e.getMessage());
+				this.logError(this.log,  "Unable to remove heat curve 2 from protocol: " + e.getMessage());
 			}
 		}
 		
 		
 	}
+
 	
 	/**
 	 *  Calling Modbus protocol modifier when heating curve for circuit 2 is enabled/disabled 
@@ -534,42 +663,27 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 	 */
 	private synchronized void handleSleepingModeProtocol(boolean sleepingModeState) throws OpenemsException {
 		
-		final Task WriteTask = new FC16WriteRegistersTask(102,
-				m(PmhModbus.ChannelId.SLEEP_MODE_DELTA_T, new UnsignedWordElement(102)), // 0x0066
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SUNDAY, new UnsignedWordElement(103)), //0x0067
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_MONDAY, new UnsignedWordElement(104)), //0x0068
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_TUESDAY, new UnsignedWordElement(105)), //0x0069
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_WEDNESDAY, new UnsignedWordElement(106)), //0x006A
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_THURSDAY, new UnsignedWordElement(107)), //0x006B
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_FRIDAY, new UnsignedWordElement(108)), //0x006C
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SATURDAY, new UnsignedWordElement(109)) //0x006D
-				);
-		
-		final Task ReadTask = new FC3ReadRegistersTask(102, Priority.LOW,
-				m(PmhModbus.ChannelId.SLEEP_MODE_DELTA_T, new UnsignedWordElement(102)), // 0x0066
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SUNDAY, new UnsignedWordElement(103)), //0x0067
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_MONDAY, new UnsignedWordElement(104)), //0x0068
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_TUESDAY, new UnsignedWordElement(105)), //0x0069
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_WEDNESDAY, new UnsignedWordElement(106)), //0x006A
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_THURSDAY, new UnsignedWordElement(107)), //0x006B
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_FRIDAY, new UnsignedWordElement(108)), //0x006C
-				m(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SATURDAY, new UnsignedWordElement(109)) //0x006D
-				);
-		
-		
-		
 		if (sleepingModeState) {
 			try {
-				this.getModbusProtocol().addTask(ReadTask);
-				this.getModbusProtocol().addTask(WriteTask);
+				this.getModbusProtocol().addTask(this.sleepingModeReadTask);
+				this.getModbusProtocol().addTask(this.sleepingModeWriteTask);
 			
 			} catch (OpenemsException e) {
 				this.logError(this.log,  "Unable to add sleeping mode to protocol: " + e.getMessage());
 			}
 		} else if (!sleepingModeState) {
 			try {
-				this.getModbusProtocol().removeTask(ReadTask);
-				this.getModbusProtocol().removeTask(WriteTask);
+				this.getModbusProtocol().removeTask(this.sleepingModeReadTask);
+				this.getModbusProtocol().removeTask(this.sleepingModeWriteTask);
+				
+				this.channel(PmhModbus.ChannelId.SLEEP_MODE_DELTA_T).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SUNDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SLEEP_MODE_TIMER_MONDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SLEEP_MODE_TIMER_TUESDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SLEEP_MODE_TIMER_WEDNESDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SLEEP_MODE_TIMER_THURSDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SLEEP_MODE_TIMER_FRIDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.SLEEP_MODE_TIMER_SATURDAY).setNextValue(null);
 
 			} catch (OpenemsException e) {
 				this.logError(this.log,  "Unable to remove sleeping mode from protocol: " + e.getMessage());
@@ -600,51 +714,35 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 	 * @throws OpenemsException
 	 */
 	private synchronized void handleLowNoiseModeProtocol(boolean lowNoiseModeState) throws OpenemsException {
-		System.out.println("Number of tasks pre handling: " +  this.getModbusProtocol().getTaskManager().countTasks());
-		System.out.println(lowNoiseModeState);
-		
-		final Task WriteTask = new FC16WriteRegistersTask(111,
-				m(PmhModbus.ChannelId.LOW_NOISE_DELTA_T, new UnsignedWordElement(111)), // 0x006F
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_SUNDAY, new UnsignedWordElement(112)), // 0x0070
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_MONDAY, new UnsignedWordElement(113)), // 0x0071
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_TUESDAY, new UnsignedWordElement(114)), // 0x0072
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_WEDNESDAY, new UnsignedWordElement(115)), // 0x0073
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_THURSDAY, new UnsignedWordElement(116)), // 0x0074
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_FRIDAY, new UnsignedWordElement(117)), // 0x0075
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_SATURDAY, new UnsignedWordElement(118)) // 0x0076
-				);
-		
-		final Task ReadTask = new FC3ReadRegistersTask(111, Priority.HIGH,
-				m(PmhModbus.ChannelId.LOW_NOISE_DELTA_T, new UnsignedWordElement(111)), // 0x006F
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_SUNDAY, new UnsignedWordElement(112)), // 0x0070
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_MONDAY, new UnsignedWordElement(113)), // 0x0071
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_TUESDAY, new UnsignedWordElement(114)), // 0x0072
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_WEDNESDAY, new UnsignedWordElement(115)), // 0x0073
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_THURSDAY, new UnsignedWordElement(116)), // 0x0074
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_FRIDAY, new UnsignedWordElement(117)), // 0x0075
-				m(PmhModbus.ChannelId.LOW_NOISE_TIMER_SATURDAY, new UnsignedWordElement(118)) // 0x0076
-				);
-		
-		
-		if (lowNoiseModeState) {
-			try {
-				this.getModbusProtocol().addTask(ReadTask);
-				this.getModbusProtocol().addTask(WriteTask);
-				} catch (OpenemsException e) {
-					this.logError(this.log,  "Unable to add low noise mode to protocol: " + e.getMessage());
-				} 
-		 } else if (!lowNoiseModeState) {
-			try {
-				this.getModbusProtocol().removeTask(ReadTask);
-				this.getModbusProtocol().removeTask(WriteTask);
-				} catch (OpenemsException e) {
-					this.logError(this.log,  "Unable to remove low noise mode from protocol: " + e.getMessage());
-				}
-		 }
-		
-		System.out.println("Number of tasks post handling: " +  this.getModbusProtocol().getTaskManager().countTasks());
-		System.out.println("Modbus debuglog " + this.getBridgeModbus().debugLog());
+
+	    if (lowNoiseModeState) {
+	        try {
+	            this.getModbusProtocol().addTask(this.lowNoiseReadTask);
+	            this.getModbusProtocol().addTask(this.lowNoiseWriteTask);
+	        } catch (OpenemsException e) {
+	            this.logError(this.log, "Unable to add low noise mode to protocol: " + e.getMessage());
+	        }
+	    } else if (!lowNoiseModeState) {
+	        try {
+	            this.getModbusProtocol().removeTask(this.lowNoiseReadTask);
+	            this.getModbusProtocol().removeTask(this.lowNoiseWriteTask);
+	            
+	            // Clearing channels after removing tasks
+	            this.channel(PmhModbus.ChannelId.LOW_NOISE_DELTA_T).setNextValue(null);
+	            this.channel(PmhModbus.ChannelId.LOW_NOISE_TIMER_SUNDAY).setNextValue(null);
+	            this.channel(PmhModbus.ChannelId.LOW_NOISE_TIMER_MONDAY).setNextValue(null);
+	            this.channel(PmhModbus.ChannelId.LOW_NOISE_TIMER_TUESDAY).setNextValue(null);
+	            this.channel(PmhModbus.ChannelId.LOW_NOISE_TIMER_WEDNESDAY).setNextValue(null);
+	            this.channel(PmhModbus.ChannelId.LOW_NOISE_TIMER_THURSDAY).setNextValue(null);
+	            this.channel(PmhModbus.ChannelId.LOW_NOISE_TIMER_FRIDAY).setNextValue(null);
+	            this.channel(PmhModbus.ChannelId.LOW_NOISE_TIMER_SATURDAY).setNextValue(null);
+	        } catch (OpenemsException e) {
+	            this.logError(this.log, "Unable to remove low noise mode to protocol: " + e.getMessage());
+	        }
+	    }
+
 	};
+	
 	
 	
 	/**
@@ -669,59 +767,67 @@ public class PmhModbusImpl extends AbstractOpenemsModbusComponent implements Pmh
 	 * @throws OpenemsException
 	 */
 	private synchronized void handleDhwStorageTimerProtocol(boolean dhwStorageTimerState) throws OpenemsException {
-		final Task ReadTask = new FC3ReadRegistersTask(76, Priority.LOW,
-				m(PmhModbus.ChannelId.DHW_TIMER_SUNDAY, new UnsignedWordElement(76)),// 0x004C
-				m(PmhModbus.ChannelId.DHW_TIMER_MONDAY, new UnsignedWordElement(77)),// 0x004D
-				m(PmhModbus.ChannelId.DHW_TIMER_TUESDAY, new UnsignedWordElement(78)),// 0x004E
-				m(PmhModbus.ChannelId.DHW_TIMER_WEDNESDAY, new UnsignedWordElement(79)),// 0x004F
-				m(PmhModbus.ChannelId.DHW_TIMER_THURSDAY, new UnsignedWordElement(80)),// 0x0050
-				m(PmhModbus.ChannelId.DHW_TIMER_FRIDAY, new UnsignedWordElement(81)),// 0x0051
-				m(PmhModbus.ChannelId.DHW_TIMER_SATURDAY, new UnsignedWordElement(82)),// 0x0052
-				m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_SUNDAY, new UnsignedWordElement(83)),// 0x0053
-				m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_MONDAY, new UnsignedWordElement(84)),// 0x0054
-				m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_TUESDAY, new UnsignedWordElement(85)),// 0x0055
-				m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_WEDNESDAY, new UnsignedWordElement(86)),// 0x0056
-				m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_THURSDAY, new UnsignedWordElement(87)),// 0x0057
-				m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_FRIDAY, new UnsignedWordElement(88)),// 0x0058
-				m(PmhModbus.ChannelId.DHW_REHEATING_TIMER_SATURDAY, new UnsignedWordElement(89))// 0x0059
-				);
-		
-		final Task WriteTask = new FC16WriteRegistersTask(76,
-				m(PmhModbus.ChannelId.DHW_TIMER_SUNDAY, new UnsignedWordElement(76)),// 0x004C
-				m(PmhModbus.ChannelId.DHW_TIMER_MONDAY, new UnsignedWordElement(77)),// 0x004D
-				m(PmhModbus.ChannelId.DHW_TIMER_TUESDAY, new UnsignedWordElement(78)),// 0x004E
-				m(PmhModbus.ChannelId.DHW_TIMER_WEDNESDAY, new UnsignedWordElement(79)),// 0x004F
-				m(PmhModbus.ChannelId.DHW_TIMER_THURSDAY, new UnsignedWordElement(80)),// 0x0050
-				m(PmhModbus.ChannelId.DHW_TIMER_FRIDAY, new UnsignedWordElement(81)),// 0x0051
-				m(PmhModbus.ChannelId.DHW_TIMER_SATURDAY, new UnsignedWordElement(82))// 0x0052)
-				);
 		
 		if (dhwStorageTimerState) {
 			try {
-				this.getModbusProtocol().addTask(ReadTask);
-				this.getModbusProtocol().addTask(WriteTask);
+				this.getModbusProtocol().addTask(this.handleDhwStorageReadTask);
+				this.getModbusProtocol().addTask(this.handleDhwStorageWriteTask);
 				} catch (OpenemsException e) {
 					this.logError(this.log,  "Unable to add DHW storage timer to protocol: " + e.getMessage());
 				} 
 		 } else if (!dhwStorageTimerState) {
 			try {
-				this.getModbusProtocol().removeTask(ReadTask);
-				this.getModbusProtocol().removeTask(WriteTask);
+				this.getModbusProtocol().removeTask(this.handleDhwStorageReadTask);
+				this.getModbusProtocol().removeTask(this.handleDhwStorageWriteTask);
+				
+				// Clear values from channel when modbus elements are removed.
+				this.channel(PmhModbus.ChannelId.DHW_TIMER_SUNDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_TIMER_MONDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_TIMER_TUESDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_TIMER_WEDNESDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_TIMER_THURSDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_TIMER_FRIDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_TIMER_SATURDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_REHEATING_TIMER_SUNDAY).setNextValue(null); 
+				this.channel(PmhModbus.ChannelId.DHW_REHEATING_TIMER_MONDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_REHEATING_TIMER_TUESDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_REHEATING_TIMER_WEDNESDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_REHEATING_TIMER_THURSDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_REHEATING_TIMER_FRIDAY).setNextValue(null);
+				this.channel(PmhModbus.ChannelId.DHW_REHEATING_TIMER_SATURDAY).setNextValue(null);
 				} catch (OpenemsException e) {
 					this.logError(this.log,  "Unable to remove DHW storage timer from protocol: " + e.getMessage());
 				}
 		 }
 	}
 	
+	
+	
 	/**
 	 *  Handle activation/de-activation of DHW storage timer
 	 */
 	protected synchronized void handleDhwStorageTimer() {
+		boolean dwhStorageTimerEnabledState;
+		boolean dhwStorageTimerReheatingEnabledState;
+		
 		Channel<Integer> dhwStorageTimerEnabled = this.channel(PmhModbus.ChannelId.DHW_STORAGE_ENABLE_DEBUG);
 		Channel<Integer> dhwStorageTimerReheatingEnabled = this.channel(PmhModbus.ChannelId.DHW_REHEATING_ENABLE_DEBUG);
 		
+		//  Handling initial null value upon wake up of system
+		if(dhwStorageTimerEnabled.value().get() == null) {
+			dwhStorageTimerEnabledState = false;
+		}
+		else {
+			dwhStorageTimerEnabledState = dhwStorageTimerEnabled.value().get().equals(1);
+		}
 		
-		var dhwStorageTimerState = (dhwStorageTimerEnabled.value().get() == 1) || (dhwStorageTimerReheatingEnabled.value().get() == 1);
+		//  Handling initial null value upon wake up of system
+		if(dhwStorageTimerReheatingEnabled.value().get() == null ) {
+			dhwStorageTimerReheatingEnabledState = false;
+		} else
+			dhwStorageTimerReheatingEnabledState = dhwStorageTimerReheatingEnabled.value().get().equals(1);
+
+		var dhwStorageTimerState = dwhStorageTimerEnabledState || dhwStorageTimerReheatingEnabledState;
 		
 		try {
 			handleDhwStorageTimerProtocol(dhwStorageTimerState);
