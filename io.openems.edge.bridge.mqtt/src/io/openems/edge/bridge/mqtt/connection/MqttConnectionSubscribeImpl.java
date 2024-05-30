@@ -77,7 +77,9 @@ public class MqttConnectionSubscribeImpl extends AbstractMqttConnection implemen
     @Override
     public String getPayload(String topic) {
         if (this.subscriptions.containsKey(topic)) {
-            return this.subscriptions.get(topic);
+        	// TODO Figure out why this is triggered
+        	//System.out.println("Getting Payload " + topic);
+            return this.subscriptions.get(topic);            
         }
 
         return "";
@@ -94,6 +96,8 @@ public class MqttConnectionSubscribeImpl extends AbstractMqttConnection implemen
     // REPLACE payload
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
+    	// TODO: Figure out why this is triggered
+    	//System.out.println("Replace triggered");
         this.subscriptions.replace(topic, new String(message.getPayload(), StandardCharsets.UTF_8));
 
     }

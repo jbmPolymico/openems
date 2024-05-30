@@ -57,11 +57,13 @@ public class MqttSubscribeTaskImpl extends AbstractMqttTask implements MqttSubsc
      * Called by MqttSubscribeManager. Response to Payload.
      * Response depends on the Style of the Payload (Atm Standard payload only).
      * Switch case atm with only one style, but open
-     *
+     * TODO is this were to reset the "payload" value when reading is completed on QOS2?
      * @param payload the Payload for the concrete MqttTask.
      */
     @Override
     public void response(String payload) {
+    	// TODO Figure out why this is triggered
+    	// System.out.println("Getting Payload mqttSubscribTaskImpl");
         super.payloadToOrFromBroker = payload;
         this.standardResponse();
     }
@@ -169,6 +171,7 @@ public class MqttSubscribeTaskImpl extends AbstractMqttTask implements MqttSubsc
      * This value will be stored in the corresponding channel.
      * See MqttType or genericexcampleconfig.json for more details/example/explanation.
      *
+     * @TODO Upon completion, it must clear the trigger for execution!!.
      * @param tokens response (payload) as a Json obj.
      */
     private void standardTelemetryResponse(JsonObject tokens) {

@@ -36,7 +36,8 @@ public class MqttSubscribeManager extends AbstractMqttManager {
             if (task instanceof MqttSubscribeTask) {
                 //Time can be set in each config.
                 if (task.isReady(super.getCurrentTime())) {
-                    //Response to new message.
+                    //Response to new message. TODO: Figure out why this is repeated
+                	//System.out.println("Triggered Subscribe Manager");
                     ((MqttSubscribeTask) task).response(this.connection.getPayload(task.getTopic()));
                     ((MqttSubscribeTask) task).convertTime();
                 }
