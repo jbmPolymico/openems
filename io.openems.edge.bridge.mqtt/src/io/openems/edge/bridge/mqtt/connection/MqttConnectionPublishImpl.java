@@ -32,7 +32,8 @@ public class MqttConnectionPublishImpl extends AbstractMqttConnection implements
         messageMqtt.setRetained(retainFlag);
         try   {
         	super.mqttClient.publish(topic, messageMqtt);
-        	super.log.info("Message published: " + messageMqtt);
+        	//super.log.info("Message published: " + messageMqtt);
+        	super.log.debug("Message published: " + messageMqtt);
         } catch (Exception e) {
         	super.log.info("Publish failed: " + e);
         }
