@@ -1,0 +1,3 @@
+[submodule "ECPowerEms"]
+	path = ECPowerEms
+	url = git@github.com:jbmPolymico/ECPowerEms.git
